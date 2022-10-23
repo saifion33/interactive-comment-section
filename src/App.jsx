@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
+import AddCommentCard from './components/AddCommentCard';
 import CommentCard from './components/CommentCard';
 
 function App() {
-  const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : {});
+  const [loading, setLoading] = useState(true);
+  const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : []);
   const fetchData = async () => {
     const response = await fetch('/src/assets/data.json', { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } });
     const data = await response.json();
     if (!localStorage.getItem('comments')) {
-      localStorage.setItem('comments', JSON.stringify(data));
+      setCommentsData(data.comments);
+      localStorage.setItem('comments', JSON.stringify(data.comments));
     }
-    console.log(JSON.parse(localStorage.getItem('comments')).comments[1].replies)
   }
 
   useEffect(() => {
     fetchData();
-  })
+    !localStorage.getItem('commentIds') && localStorage.setItem('commentIds', JSON.stringify([1, 2, 3, 4, 5]));
+    // eslint-disable-next-line
+  }, [])
   const currentUser = {
     "image": {
       "png": "src/assets/images/avatars/image-juliusomo.png",
@@ -22,7 +26,24 @@ function App() {
     },
     "username": "juliusomo"
   }
-
+  const addComment = (newComment, id) => {
+    const comments = [...commentsData];
+    comments.filter(comment => comment.id === id && (comment.replies.push(newComment)))
+    setCommentsData(comments)
+    localStorage.setItem('comments', JSON.stringify(comments));
+  }
+  const updateComment = (updatedComment, parentId, commentId) => {
+    const comments = [...commentsData];
+    comments.filter(comment => comment.id === parentId && (comment.replies.filter(reply => reply.id === commentId)[0].content = updatedComment))
+    setCommentsData(comments)
+    localStorage.setItem('comments', JSON.stringify(comments));
+  }
+  const deleteComment = (parentId, commentId) => {
+    const comments = [...commentsData];
+    comments.filter(comment => comment.id === parentId && (comment.replies = comment.replies.filter(reply => reply.id !== commentId)));
+    setCommentsData(comments);
+    localStorage.setItem('comments', JSON.stringify(comments));
+  }
 
   return (
     <div className="app bg-gray-100 min-h-screen py-6">
@@ -30,24 +51,22 @@ function App() {
         <div className="comment-container space-y-4">
 
           {
-            JSON.parse(localStorage.getItem('comments')).comments.map(comment => {
+            commentsData.length > 0 && commentsData.map((comment, index) => {
               return (
-                <div className="comment-wrapper space-y-4">
-                  <CommentCard comment={comment} />
+                <div key={comment.id + index} id={comment.id} className="comment-wrapper space-y-4">
+                  <CommentCard addComment={addComment} updateComment={updateComment} deleteComment={deleteComment} comment={comment} />
                   <div className="comment-wrapper pl-5 border-l-2 ml-4 md:pl-10 md:border-l-4 md:ml-11 space-y-4">
-                    {comment.replies.length > 0 ? comment.replies.map(replyComment => { return (<CommentCard comment={replyComment} />) }) : ''}
+                    {comment.replies.length > 0 ? comment.replies.map(replyComment => {
+                      return (
+                        <CommentCard addComment={addComment} updateComment={updateComment} deleteComment={deleteComment} parentId={comment.id} comment={replyComment} />
+                      )
+                    }) : ''}
                   </div>
                 </div>)
             })
           }
         </div>
-        <div className="add-comment-container bg-white p-3 rounded-md mt-6">
-          <textarea className='w-full p-2 border-2 ' name="textarea" id="textarea" rows="4" placeholder='Add a Comment...'></textarea>
-          <div className="userprofile-and-send-btn-container flex justify-between items-center mt-2">
-            <img className='w-8 h-8' src={currentUser.image.webp} alt="user" />
-            <button className="sendBtn bg-modarate-blue text-white font-semibold px-3 py-2 rounded-md">SEND</button>
-          </div>
-        </div>
+        <AddCommentCard id='addCommentBox-0' addComment={addComment} currentUser={currentUser} commentType={'SEND'} />
       </div>
     </div>
   )
