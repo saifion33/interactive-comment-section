@@ -5,7 +5,6 @@ const AddCommentCard = (props) => {
     const changeHandler = (e) => {
         setValue(e.target.value)
     }
-    const idList = [];
     const submitComment = () => {
         const idsList = JSON.parse(localStorage.getItem('commentIds'));
         const date = new Date;
@@ -27,7 +26,8 @@ const AddCommentCard = (props) => {
             user: props.currentUser,
             createdAt: date.getHours()
         }
-        props.addComment(newComment, props.commentId);
+        props.addComment(newComment, props.commentId, props.commentType);
+        setValue('')
         props.setReplying(false)
     }
     return (
