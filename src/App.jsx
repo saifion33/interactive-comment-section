@@ -8,7 +8,7 @@ function App() {
   const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : []);
   const [modalVisible, setModalVisible] = useState(false);
   const fetchData = async () => {
-    const response = await fetch('/src/assets/data.json', { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } });
+    const response = await fetch('/assets/data.json', { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } });
     const data = await response.json();
     if (!localStorage.getItem('comments')) {
       setCommentsData(data.comments);
@@ -23,8 +23,8 @@ function App() {
   }, [])
   const currentUser = {
     "image": {
-      "png": "src/assets/images/avatars/image-juliusomo.png",
-      "webp": "src/assets/images/avatars/image-juliusomo.webp"
+      "png": "/assets/images/avatars/image-juliusomo.png",
+      "webp": "/assets/images/avatars/image-juliusomo.webp"
     },
     "username": "juliusomo"
   }
@@ -92,10 +92,12 @@ function App() {
           if (!reply['currentUserVote'] && voteType === 'upvote') {
             reply['currentUserVote'] = true;
             reply.score += 1
+            showAlert('successful', `You Upvote the comment`)
           }
           else if (reply.hasOwnProperty('currentUserVote') && voteType === 'downvote') {
             delete reply['currentUserVote'];
             reply.score -= 1
+            showAlert('warning', `You Downvote the comment`)
           }
         }
       })));

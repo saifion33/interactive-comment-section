@@ -30,7 +30,6 @@ const AddCommentCard = (props) => {
         }
         props.addComment(newComment, props.commentId, props.commentType);
         setValue('')
-        console.log(props.commentType)
         props.commentType === 'Reply' && props.setReplying(false)
     }
     return (

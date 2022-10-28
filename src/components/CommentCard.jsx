@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import plusIcon from '../assets/images/icon-plus.svg';
-import minusIcon from '../assets/images/icon-minus.svg';
-import replyIcon from '../assets/images/icon-reply.svg';
-import deleteIcon from '../assets/images/icon-delete.svg';
-import editIcon from '../assets/images/icon-edit.svg';
+import plusIcon from '/assets/images/icon-plus.svg';
+import minusIcon from '/assets/images/icon-minus.svg';
+import replyIcon from '/assets/images/icon-reply.svg';
+import deleteIcon from '/assets/images/icon-delete.svg';
+import editIcon from '/assets/images/icon-edit.svg';
 import AddCommentCard from './AddCommentCard';
 import timeStampConverter from '../Function/timeStampConverter';
 
