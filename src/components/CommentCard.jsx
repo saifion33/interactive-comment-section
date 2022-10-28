@@ -15,9 +15,52 @@ const CommentCard = (props) => {
     },
     "username": "juliusomo"
   }
+  function timeStampConverter(timestamp) {
+    const timeDevider = {
+      minute: 60,
+      hour: 3600,
+      day: 86400,
+      week: 604800,
+      month: 2628288,
+      year: 31536000
+    }
+    const currentTime = new Date();
+    const time = Math.floor((currentTime - timestamp) / 1000);
+    if (time === 0) {
+      return ('Just Now')
+    }
+    else if (time <= timeDevider.minute) {
+      return (Math.floor(time) + ' Second ago')
+    }
+    else if (time <= timeDevider.hour) {
+      return (Math.floor(time / 60) + ' Minute ago')
+    }
+    else if (time <= timeDevider.day) {
+      return (Math.floor(time / 3600) + ' Hour ago')
+    }
+    else if (time <= timeDevider.week) {
+      return (Math.floor(time / 86400) + ' Day ago')
+    }
+    else if (time <= timeDevider.month) {
+      return (Math.floor(time / 604800) + ' week ago')
+    }
+    else if (time <= timeDevider.year) {
+      return (Math.floor(time / 2628288) + ' month ago')
+    }
+    else if (time >= timeDevider.year) {
+      return (Math.floor(time / 31536000) + ' Year ago')
+    }
+    else {
+      return ('Unknown time')
+    }
+
+  }
+
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(props.comment.content)
+
+  const [value, setValue] = useState(props.comment.content);
+
   return (
     <>
       <div key={props.comment.id} className="comment-card bg-white rounded-md p-3 lg:flex lg:justify-start w-full lg:flex-row-reverse lg:p-5">
@@ -26,14 +69,15 @@ const CommentCard = (props) => {
             <img className='w-8 h-8 lg:w-10 lg:h-10' src={props.comment.user.image.webp} alt={props.comment.user.username} />
             <strong className="username  font-semibold">{props.comment.user.username}</strong>
             <p className={`${props.comment.user.username !== currentUser.username ? 'hidden px-0' : 'px-2 '}bg-modarate-blue  text-white rounded-sm`}>you</p>
-            <p className='text-grayish-Blue'>{props.comment.createdAt}</p>
+            <p className='text-grayish-Blue'>{isNaN(props.comment.createdAt) ? props.comment.createdAt : timeStampConverter(props.comment.createdAt)}</p>
             <div onClick={() => { setReplying(true) }} className={`${props.comment.user.username === currentUser.username ? 'lg:hidden' : 'lg:flex '}cursor-pointer hidden  replay-btn-container  items-center space-x-2 text-lg ml-auto mr-4`}  >
               <strong className='text-blue-800'>Reply</strong>
               <img className='w-5' src={replyIcon} alt="reply" />
             </div>
             <div className={`delete-and-edit-container ml-auto hidden  space-x-3 ${props.comment.user.username !== currentUser.username ? 'hidden' : 'lg:flex '}`}>
               <div onClick={() => {
-                props.deleteComment((props.parentId ? props.parentId : null), props.comment.id)
+                props.setDeleteCommentId({ parentId: (props.parentId ? props.parentId : null), commentId: props.comment.id })
+                props.deleteCommentHandler()
               }} className="delete flex items-center cursor-pointer">
                 <img className='mr-1' src={deleteIcon} alt="delete" />
                 <p className='text-soft-red'>Delete</p>
@@ -64,12 +108,12 @@ const CommentCard = (props) => {
         </div>
         <div className="upvote-and-replay-container flex justify-between items-center lg:items-start lg:mr-5">
           <div className="upvote flex items-center space-x-3 bg-very-light-gray py-2 px-3 rounded-xl lg:flex-col lg:space-x-0 lg:space-y-3 lg:py-5 ">
-            <img className='w-4 h-4' src={plusIcon} alt="plus" />
+            <img onClick={() => { props.commentVoter(props.parentId ? props.parentId : null, props.comment.id, 'upvote') }} className='w-4 h-4 hover:cursor-pointer' src={plusIcon} alt="plus" />
             <p className='text-lg font-semibold text-blue-800'>{props.comment.score}</p>
-            <img className='w-4 h-1' src={minusIcon} alt="minus" />
+            <img onClick={() => { props.commentVoter(props.parentId ? props.parentId : null, props.comment.id, 'downvote') }} className='w-4 h-1 hover:cursor-pointer' src={minusIcon} alt="minus" />
           </div>
           <div className={`replay-btn-container cursor-pointer flex lg:hidden items-center mr-4 space-x-2 text-lg ${props.comment.user.username === currentUser.username ? 'hidden' : ''}`}  >
-            <strong className='text-blue-800'>Reply</strong>
+            <strong className='text-blue-800 '>Reply</strong>
             <img className='w-5' src={replyIcon} alt="reply" />
           </div>
           <div className={`delete-and-edit-container flex space-x-3 ${props.comment.user.username !== currentUser.username ? 'hidden' : 'lg:hidden'}`}>

@@ -5,6 +5,7 @@ const AddCommentCard = (props) => {
     const changeHandler = (e) => {
         setValue(e.target.value)
     }
+    
     const submitComment = () => {
         const idsList = JSON.parse(localStorage.getItem('commentIds'));
         const date = new Date;
@@ -24,19 +25,23 @@ const AddCommentCard = (props) => {
             score: 0,
             replyingTo: props.user,
             user: props.currentUser,
-            createdAt: date.getHours()
+            createdAt: date.getTime()
         }
         props.addComment(newComment, props.commentId, props.commentType);
         setValue('')
-        props.setReplying(false)
+        if (props.commentType === 'Reply') {
+            props.setReplying(false)
+        }
     }
     return (
         <div key={props.user} id={props.id} className="add-comment-container bg-white p-3 rounded-md mt-6">
             <textarea value={value} onChange={changeHandler} className='w-full p-2 border-2 ' name="textarea" id="textarea" rows="4" placeholder='Add a Comment...'></textarea>
             <div className="userprofile-and-send-btn-container flex justify-between items-center mt-2">
                 <img className='w-8 h-8' src={props.currentUser.image.webp} alt="user" />
-                <button className="sendBtn bg-modarate-blue text-white font-semibold px-3 py-1 rounded-md" onClick={submitComment}>{props.commentType}</button>
-            </div>
+                {
+                    value && <button className="sendBtn bg-modarate-blue text-white font-semibold px-3 py-1 rounded-md" onClick={submitComment}>{props.commentType}</button>
+
+                }            </div>
         </div>
     )
 }
