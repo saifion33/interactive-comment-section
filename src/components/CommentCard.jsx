@@ -5,7 +5,7 @@ import replyIcon from '../assets/images/icon-reply.svg';
 import deleteIcon from '../assets/images/icon-delete.svg';
 import editIcon from '../assets/images/icon-edit.svg';
 import AddCommentCard from './AddCommentCard';
-
+import timeStampConverter from '../Function/timeStampConverter';
 
 const CommentCard = (props) => {
   const currentUser = {
@@ -15,46 +15,7 @@ const CommentCard = (props) => {
     },
     "username": "juliusomo"
   }
-  function timeStampConverter(timestamp) {
-    const timeDevider = {
-      minute: 60,
-      hour: 3600,
-      day: 86400,
-      week: 604800,
-      month: 2628288,
-      year: 31536000
-    }
-    const currentTime = new Date();
-    const time = Math.floor((currentTime - timestamp) / 1000);
-    if (time === 0) {
-      return ('Just Now')
-    }
-    else if (time <= timeDevider.minute) {
-      return (Math.floor(time) + ' Second ago')
-    }
-    else if (time <= timeDevider.hour) {
-      return (Math.floor(time / 60) + ' Minute ago')
-    }
-    else if (time <= timeDevider.day) {
-      return (Math.floor(time / 3600) + ' Hour ago')
-    }
-    else if (time <= timeDevider.week) {
-      return (Math.floor(time / 86400) + ' Day ago')
-    }
-    else if (time <= timeDevider.month) {
-      return (Math.floor(time / 604800) + ' week ago')
-    }
-    else if (time <= timeDevider.year) {
-      return (Math.floor(time / 2628288) + ' month ago')
-    }
-    else if (time >= timeDevider.year) {
-      return (Math.floor(time / 31536000) + ' Year ago')
-    }
-    else {
-      return ('Unknown time')
-    }
 
-  }
 
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -99,7 +60,7 @@ const CommentCard = (props) => {
 
             }
             {
-              editing && <div className=''>
+              editing && <div className='overflow-auto'>
                 <textarea className='w-full' name="textarea" id="textarea" rows="3" value={value} onChange={(e) => { setValue(e.target.value) }}></textarea>
                 <button className=" sendBtn float-right bg-modarate-blue text-white font-semibold px-3 py-1 rounded-md" onClick={() => { props.updateComment(value, (props.parentId ? props.parentId : null), props.comment.id); setEditing(false) }}>UPDATE</button>
               </div>
@@ -112,18 +73,21 @@ const CommentCard = (props) => {
             <p className='text-lg font-semibold text-blue-800'>{props.comment.score}</p>
             <img onClick={() => { props.commentVoter(props.parentId ? props.parentId : null, props.comment.id, 'downvote') }} className='w-4 h-1 hover:cursor-pointer' src={minusIcon} alt="minus" />
           </div>
-          <div className={`replay-btn-container cursor-pointer flex lg:hidden items-center mr-4 space-x-2 text-lg ${props.comment.user.username === currentUser.username ? 'hidden' : ''}`}  >
+          <div onClick={() => { setReplying(true) }} className={`replay-btn-container cursor-pointer flex lg:hidden items-center mr-4 space-x-2 text-lg ${props.comment.user.username === currentUser.username ? 'hidden' : ''}`}  >
             <strong className='text-blue-800 '>Reply</strong>
             <img className='w-5' src={replyIcon} alt="reply" />
           </div>
           <div className={`delete-and-edit-container flex space-x-3 ${props.comment.user.username !== currentUser.username ? 'hidden' : 'lg:hidden'}`}>
             <div onClick={() => {
-              props.deleteComment(props.comment.id)
+              props.setDeleteCommentId({ parentId: (props.parentId ? props.parentId : null), commentId: props.comment.id })
+              props.deleteCommentHandler()
             }} className="delete flex items-center">
               <img className='mr-1' src={deleteIcon} alt="delete" />
               <p className='text-soft-red'>Delete</p>
             </div>
-            <div className="delete flex items-center">
+            <div onClick={() => {
+              setEditing(true)
+            }} className="delete flex items-center">
               <img className='mr-1' src={editIcon} alt="edit" />
               <p className='text-modarate-blue'>Edit</p>
             </div>

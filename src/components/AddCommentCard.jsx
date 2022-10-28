@@ -5,10 +5,11 @@ const AddCommentCard = (props) => {
     const changeHandler = (e) => {
         setValue(e.target.value)
     }
-    
+
     const submitComment = () => {
         const idsList = JSON.parse(localStorage.getItem('commentIds'));
         const date = new Date;
+        // This function generates a unique id for each comment
         const idGenerator = () => {
             const id = Math.floor(Math.random() * (1000 - 10)) + 10;
             if (idsList.includes(id)) {
@@ -29,9 +30,8 @@ const AddCommentCard = (props) => {
         }
         props.addComment(newComment, props.commentId, props.commentType);
         setValue('')
-        if (props.commentType === 'Reply') {
-            props.setReplying(false)
-        }
+        console.log(props.commentType)
+        props.commentType === 'Reply' && props.setReplying(false)
     }
     return (
         <div key={props.user} id={props.id} className="add-comment-container bg-white p-3 rounded-md mt-6">

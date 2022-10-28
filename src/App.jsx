@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import AddCommentCard from './components/AddCommentCard';
+import Alertbar from './components/Alertbar';
 import CommentCard from './components/CommentCard';
+import Modal from './components/modal';
 
 function App() {
   const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : []);
@@ -26,20 +28,41 @@ function App() {
     },
     "username": "juliusomo"
   }
+  // ##################################  ALERT RELATED FUNCTIONS  ##################################################
+  const [alert, setAlert] = useState({ alertMessage: 'This is my message', alertType: 'successful' })
+  const [alertVisible, setAlertVisible] = useState(false)
+  // **************** This function takes alert type and alert message and sets alert. Alert Auto dismissed after 1.5 second. ****************
+  const showAlert = (alert_type, alert_message) => {
+    setAlert({ alertMessage: alert_message, alertType: alert_type })
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 1500);
+  }
+
+  // #################################### ADD COMMENT OR REPLY FUNCTION #############################################
+  // This function takes comment , comment id and comment Type (comment Or reply)
   const addComment = (newComment, id, commentType) => {
     const comments = [...commentsData];
     commentType === 'Reply' ? (comments.filter(comment => comment.id === id && (comment.replies.push(newComment)))) : comments.push(newComment);
     setCommentsData(comments)
     localStorage.setItem('comments', JSON.stringify(comments));
+    showAlert('successful', 'comment added successfully')
   }
+
+  // #################################### UPDATE COMMENT OR UPDATE REPLY FUNCTION #############################################
+  // This function takes updated comment , if it is reply then takes parentComment id and comment id itself.
   const updateComment = (updatedComment, parentId, commentId) => {
     const comments = [...commentsData];
     comments.filter(comment => { comment.id === parentId ? (comment.replies.filter(reply => reply.id === commentId)[0].content = updatedComment) : ((comment.id === commentId) && (comment.content = updatedComment)) })
     setCommentsData(comments)
     localStorage.setItem('comments', JSON.stringify(comments));
+    showAlert('successful', 'comment updated successfully')
   }
+
+  // #################################### COMMENT VOTER FUNCTION #############################################
+  // This function takes  voteType (upvote or downvote) and comment id, if this comment is reply comment then it also takes parentId
   const commentVoter = (parentId, commentId, voteType) => {
-    console.log(parentId, commentId, voteType)
     const comments = [...commentsData];
 
     if (!parentId) {
@@ -48,12 +71,14 @@ function App() {
           if (!comment['currentUserVote'] && voteType === 'upvote') {
             comment['currentUserVote'] = true;
             comment.score += 1
+            showAlert('successful', `You Upvote the comment`)
           }
           else if (comment.hasOwnProperty('currentUserVote') && voteType === 'downvote') {
             delete comment['currentUserVote'];
             comment.score -= 1
+            showAlert('warning', `You Downvote the comment`)
           }
-          console.log(comment['currentUserVote'])
+
         }
       });
 
@@ -77,8 +102,14 @@ function App() {
     }
     setCommentsData(comments);
     localStorage.setItem('comments', JSON.stringify(comments));
+
   }
+  // ############################################## DELETE COMMENT FUNCTION ##############################################
+  /*  When user clicks on delete btn of comment then a function is called and setDeleteCommentId
+   as object with comment id if comment is reply then also set parent id as well*/
+
   const [deleteCommentId, setDeleteCommentId] = useState({})
+  // This function is called when user clicks on delete btn of modal dialog
   const deleteComment = (parentId, commentId) => {
     let comments = [...commentsData];
     if (!parentId) {
@@ -93,7 +124,9 @@ function App() {
     localStorage.setItem('comments', JSON.stringify(comments))
     setDeleteCommentId({})
     setModalVisible(false)
+    showAlert('danger', 'comment deleted successfully')
   }
+  // when user clicks on delete btn of comment this function will run and show modal
   const deleteCommentHandler = () => {
     setModalVisible(true);
 
@@ -101,6 +134,7 @@ function App() {
 
   return (
     <div className="app bg-gray-100 min-h-screen py-6 h-min relative">
+      <Alertbar alertType={alert.alertType} alertVisible={alertVisible} alertMessage={alert.alertMessage} />
       <div className="main-container font-Rubik  p-3 md:px-10 md:mx-auto lg:w-1/2">
         <div className="comment-container space-y-4">
 
@@ -124,17 +158,7 @@ function App() {
         </div>
         <AddCommentCard id='addCommentBox-0' addComment={addComment} currentUser={currentUser} commentType={'SEND'} />
       </div>
-      <div className={`modal-container ${modalVisible ? 'flex ' : 'hidden'} fixed w-full top-0 left-0 bg-grayish-Blue bg-opacity-70 h-screen justify-center items-center px-6`}>
-        <div className="modal  bg-white rounded-md md:w-1/3 lg:w-1/4 p-4">
-          <h2 className='text-2xl font-semibold mb-3' >Delete Comment</h2>
-          <p className='text-lg text-grayish-Blue'>Are you sure you want to delete this comment? This will remove the comment and can't be undone.</p>
-          <div className="btn-container flex justify-between mt-3">
-            <button onClick={() => { setModalVisible(false) }} className='bg-dark-blue mx-2 w-1/2 py-1 rounded text-white font-semibold'>NO,CANCAL</button>
-            <button onClick={() => { deleteComment(deleteCommentId.parentId, deleteCommentId.commentId) }} className='bg-soft-red mx-2 w-1/2 py-1 rounded text-white font-semibold'>YES,DELETE</button>
-          </div>
-        </div>
-
-      </div>
+      <Modal modalVisible={modalVisible} setModalVisible={setModalVisible} deleteCommentId={deleteCommentId} deleteComment={deleteComment} />
     </div>
   )
 }
