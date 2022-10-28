@@ -10,8 +10,8 @@ import timeStampConverter from '../Function/timeStampConverter';
 const CommentCard = (props) => {
   const currentUser = {
     "image": {
-      "png": "src/assets/images/avatars/image-juliusomo.png",
-      "webp": "src/assets/images/avatars/image-juliusomo.webp"
+      "png": "/assets/images/avatars/image-juliusomo.png",
+      "webp": "/assets/images/avatars/image-juliusomo.webp"
     },
     "username": "juliusomo"
   }
