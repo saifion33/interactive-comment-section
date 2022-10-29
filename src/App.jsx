@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import AddCommentCard from './components/AddCommentCard';
 import Alertbar from './components/Alertbar';
 import CommentCard from './components/CommentCard';
-import Modal from './components/modal';
+import Modal from './components/Modal';
 
 function App() {
   const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : []);
