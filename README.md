@@ -28,12 +28,18 @@ Users should be able to:
 
 ### Screenshot
 
-![](./screenshot.jpg)
+![](https://github.com/saifion33/interactive-comment-section/blob/master/public/screenshot/interactive-comment-section-screenshot.png)
 
 ### Links
 
 - Solution URL: [view solution on frontendMentor](https://www.frontendmentor.io/solutions/interactive-comment-section-reactjs-tailwind-css-svAowvVh5g)
 - Live Site URL: [view Live](https://comment-section-interactive.netlify.app/)
+![screenshot](https://github.com/saifion33/interactive-comment-section/blob/master/public/screenshot/interactive-comment-section-screenshot.png)
+
+### Links
+
+- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Live Site URL: [Add live site URL here](https://comment-section-interactive.netlify.app/)
 
 ## My process
 
