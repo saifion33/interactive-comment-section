@@ -38,7 +38,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [Add solution URL here](https://www.frontendmentor.io/solutions/interactive-comment-section-reactjs-tailwind-css-svAowvVh5g)
 - Live Site URL: [Add live site URL here](https://comment-section-interactive.netlify.app/)
 
 ## My process
