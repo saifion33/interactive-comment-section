@@ -33,8 +33,8 @@ const AddCommentCard = (props) => {
         props.commentType === 'Reply' && props.setReplying(false)
     }
     return (
-        <div key={props.user} id={props.id} className="add-comment-container bg-white p-3 rounded-md mt-6">
-            <textarea value={value} onChange={changeHandler} className='w-full p-2 border-2 ' name="textarea" id="textarea" rows="4" placeholder='Add a Comment...'></textarea>
+        <div key={props.user} id={props.id} className="add-comment-container bg-white dark:bg-slate-900 p-3 rounded-md mt-6">
+            <textarea value={value} onChange={changeHandler} className='w-full p-2 border-2 dark:bg-slate-800 dark:text-stone-200' name="textarea" id="textarea" rows="4" placeholder='Add a Comment...'></textarea>
             <div className="userprofile-and-send-btn-container flex justify-between items-center mt-2">
                 <img className='w-8 h-8' src={props.currentUser.image.webp} alt="user" />
                 {

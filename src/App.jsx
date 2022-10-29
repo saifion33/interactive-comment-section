@@ -3,10 +3,14 @@ import AddCommentCard from './components/AddCommentCard';
 import Alertbar from './components/Alertbar';
 import CommentCard from './components/CommentCard';
 import Modal from './components/Modal';
+import moonIcon from '/assets/images/moon-icon.svg'
+import sunIcon from '/assets/images/sun-icon.svg'
 
 function App() {
   const [commentsData, setCommentsData] = useState(localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : []);
   const [modalVisible, setModalVisible] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
+  const mainDoc = document.getElementById('main-document');
   const fetchData = async () => {
     const response = await fetch('/assets/data.json', { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } });
     const data = await response.json();
@@ -135,7 +139,17 @@ function App() {
   }
 
   return (
-    <div className="app bg-gray-100 min-h-screen py-6 h-min relative">
+    <div className="app  bg-gray-100 dark:bg-slate-800 min-h-screen py-6 h-min relative">
+      <div className="light-and-dark-icon-container p-5 lg:p-0 lg:ml-5 lg:cursor-pointer">
+        <div className={`${lightMode ? 'hidden' : 'flex'} justify-center font-semibold dark:text-white items-center gap-5`} onClick={() => { setLightMode(true); mainDoc.classList.remove('dark') }}>
+          <p className='text-xl lg:text-base'>{lightMode ? 'Dark Mode' : 'Light Mode'}</p>
+          <img className='w-8 h-8' src={sunIcon} alt="sun" />
+        </div>
+        <div className={`${lightMode ? 'flex' : 'hidden'} justify-center font-semibold items-center gap-5`} onClick={() => { setLightMode(false); mainDoc.classList.add('dark') }}>
+          <p className='text-xl lg:text-base'>{lightMode ? 'Dark Mode' : 'Light Mode'}</p>
+          <img className='w-8 h-8' src={moonIcon} alt="moon" />
+        </div>
+      </div>
       <Alertbar alertType={alert.alertType} alertVisible={alertVisible} alertMessage={alert.alertMessage} />
       <div className="main-container font-Rubik  p-3 md:px-10 md:mx-auto lg:w-1/2">
         <div className="comment-container space-y-4">
