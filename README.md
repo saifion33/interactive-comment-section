@@ -34,7 +34,7 @@ Users should be able to:
 
 - Solution URL: [view solution on frontendMentor](https://www.frontendmentor.io/solutions/interactive-comment-section-reactjs-tailwind-css-svAowvVh5g)
 - Live Site URL: [view Live](https://comment-section-interactive.netlify.app/)
-![screenshot](https://github.com/saifion33/interactive-comment-section/blob/master/public/screenshot/interactive-comment-section-screenshot.png)
+
 
 ### Links
 
